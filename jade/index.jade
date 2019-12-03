@@ -1,0 +1,14 @@
+extends blocks/layout-default
+
+block head
+	title Custom Hero Survival Web
+	meta(charset='utf-8')
+	meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
+	link(rel='stylesheet' href='css/main.css')
+
+block content
+	include blocks/gamecanvas
+
+	script(src='js/jquery.min.js')
+	script(src='js/main.js')
