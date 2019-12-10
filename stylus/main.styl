@@ -1,4 +1,19 @@
 @import 'helpers/optimize.styl'
+@import 'helpers/mixins.styl'
+@import 'helpers/fonts.styl'
+@import 'helpers/variables.styl'
 
-#canvas
+@import 'screens/gamegui.styl'
+
+.gamescreen
+	position relative
+	top 0
+	left 0
+	width 100%
+	height 100vh
+
+.canvas-container
 	position absolute
+	width 100%
+	height 100vh
+	overflow hidden

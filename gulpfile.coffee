@@ -12,6 +12,8 @@ rollup = require 'gulp-rollup'
 copy = require 'gulp-copy'
 sourcemaps = require 'gulp-sourcemaps'
 
+utils = require './utils'
+
 
 assetsT = (cb) ->
 	gulp.src 'assets/**/*.*'
@@ -90,8 +92,8 @@ coffee2JsonT = (cb) ->
 				try
 					js = CoffeeScript.compile fs.readFileSync(fileName).toString(),
 						bare: true
-					func = new Function js + ';return obj;'
-					json = JSON.stringify func()
+					func = new Function 'utils', js + ';return obj;'
+					json = JSON.stringify func(utils)
 					fs.writeFile path.join(coffee2jsonExportDir, dir, path.basename(file, '.coffee') + '.json'), json, ->
 				catch e
 					console.log 'Error in file: ' + path.join(dir, file) + '\n' + e

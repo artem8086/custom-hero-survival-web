@@ -1,5 +1,6 @@
 class EventEmmiter
-	handlers: []
+	constructor: ->
+		@handlers = []
 
 	on: (event, callback) ->
 		if callback

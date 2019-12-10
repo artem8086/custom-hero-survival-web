@@ -1,0 +1,41 @@
+.gamegui
+	.btn-fullscreen
+		position absolute
+		top 10px
+		right 10px
+		width 64px
+		height 64px
+		border 1px solid #999
+		background-color #999
+		text-align center
+		box-shadow 0 0 10px rgba(0,0,0,0.5)
+		transition background-color ease-in .15s
+		border-radius 50%
+		&:before
+		&:after
+			display inline-block
+			content ''
+			width 26px
+			height 26px
+			vertical-align middle
+			transition all ease-in .15s
+		&:before
+			border 4px solid #000
+		&:after
+			position absolute
+			width 32px
+			height 32px
+			left 15px
+			top 15px
+			background-color #999
+			transform-origin center
+			transform rotate(45deg)
+		&:hover
+			background-color #777
+			&:after
+				background-color #777
+		&:active
+			&:before
+				width 30px
+				height 30px
+		

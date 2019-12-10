@@ -1,20 +1,17 @@
 import { Model } from './model'
 
 MIN_Z_DISTANCE = -2000
-MAX_Z_DISTANCE = 5000
+MAX_Z_DISTANCE = 2000
 
 class DrawStage
 
 	objects: []
 
-	constructor: (@canvas, @camera) ->
+	constructor: (@context, @camera) ->
 
 	add: (model, v) ->
 		objects = @objects
-		v = v ||
-			x: 0
-			y: 0
-			z: 0
+		v = v || x: 0, y: 0, z: 0
 		if model.parts
 			for _, part of model.parts
 				unless part.hide
@@ -22,11 +19,12 @@ class DrawStage
 					p.v = v
 					objects.push p
 
-		unless model.nodeObj
-			nObj = new NodeObject model
-			nObj.v = v
-			model.nodeObj = nObj
-			objects.push nObj
+		if model.data.dirs
+			unless model.nodeObj
+				nObj = new NodeObject model
+				nObj.v = v
+				model.nodeObj = nObj
+				objects.push nObj
 		this
 
 	delete: (model) ->
@@ -48,10 +46,7 @@ class DrawStage
 			obj.draw this
 		this
 
-tVector =
-	x: 0
-	y: 0
-	z: 0
+tVector = x: 0, y: 0, z: 0
 
 class PartObject
 	constructor: (@model, @part) ->
@@ -66,7 +61,7 @@ class PartObject
 
 	draw: (stage) ->
 		c = stage.camera
-		g = stage.canvas
+		g = stage.context
 		tVector.x = @v.x + c.x
 		tVector.y = @v.y + c.y
 		tVector.z = @v.z + c.z
@@ -86,10 +81,12 @@ class NodeObject
 
 	draw: (stage) ->
 		c = stage.camera
-		g = stage.canvas
+		g = stage.context
 		g.save()
-		Model.transform(@v.x, @v.y, @v.z, camera)
+		Model.transform(@v.x, @v.y, @v.z, c)
 			.apply g
 		if @scale then g.scale @scale, @scale
 		@model.drawNode g, @node, @opacity
 		g.restore()
+
+export { DrawStage }
