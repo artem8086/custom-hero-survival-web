@@ -397,11 +397,11 @@ class Model
 		trsfObj.scale = z
 		trsfObj
 
-	attachment: []
-	animation: new Animation
 	angle: 0
 
 	constructor: (@data) ->
+		@attachment = []
+		@animation = new Animation
 
 	setData: (@data) ->
 		@setAngle @angle

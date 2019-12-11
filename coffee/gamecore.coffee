@@ -1,5 +1,6 @@
 import { EventEmmiter } from './events'
 import { Arena } from './arena'
+import { Animation } from './animation'
 import { DrawStage } from './drawstage'
 import { Loader } from './loader'
 
@@ -10,13 +11,13 @@ class GameCore extends EventEmmiter
 		@loader = new Loader
 		@camera = camera = x: 0, y: 0, z: 0
 		@drawstage = new DrawStage @context, camera
-		@arena = new Arena
+		@arena = new Arena this
 
 	load: ->
 		@arena.load @loader
 		@loader.on 'load', =>
 			@arena.init()
-			@arena.set this
+			@arena.set()
 			@trigger 'load'
 		this
 
@@ -30,12 +31,12 @@ class GameCore extends EventEmmiter
 			@context.fillStyle = '#fff'
 			@context.fillRect 0, 0, w, h
 
-			time = new Date().getTime() / 1000
+			time = Animation.getTime()
 
 			@arena.play time
 
 			# context.translate cx, cy
-			@arena.predraw this
+			@arena.predraw()
 
 			@drawstage.draw()
 

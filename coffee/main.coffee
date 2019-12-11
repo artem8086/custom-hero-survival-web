@@ -7,7 +7,6 @@ $(document).ready ->
 	canvas = $canvas.get 0
 	context = canvas.getContext '2d', alpha: false
 
-
 	resize = ->
 		canvas.width = $(window).width()
 		canvas.height = $(window).height()
@@ -18,7 +17,6 @@ $(document).ready ->
 
 	gamecore = new GameCore canvas, context
 	gamecore.on 'load', ->
-		console.log 'load'
 		gamecore.render()
 
 	gamecore.load()
