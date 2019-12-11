@@ -12,6 +12,8 @@ class GameCore extends EventEmmiter
 		@camera = camera = x: 0, y: 0, z: 0
 		@drawstage = new DrawStage @context, camera
 		@arena = new Arena this
+		@pauseTime = 0
+		@pause = false
 
 	load: ->
 		@arena.load @loader
@@ -31,9 +33,10 @@ class GameCore extends EventEmmiter
 			@context.fillStyle = '#fff'
 			@context.fillRect 0, 0, w, h
 
-			time = Animation.getTime()
+			unless @pause
+				@time = Animation.getTime() - @pauseTime
 
-			@arena.play time
+			@arena.play @time
 
 			# context.translate cx, cy
 			@arena.predraw()
@@ -45,5 +48,12 @@ class GameCore extends EventEmmiter
 			window.requestAnimationFrame rndr
 		rndr 0
 		this
+
+	pause: ->
+		@pause = true
+
+	unpause: ->
+		@pause = false
+		@pauseTime += Animation.getTime() - @time
 
 export { GameCore }
