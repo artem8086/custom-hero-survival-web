@@ -1,6 +1,7 @@
 import { ModelData, Model } from './model'
+import { AnimationData } from './animation'
 import { Unit, UnitGroup } from './unit'
-
+import { loadUnitData } from './unit'
 
 ARENA_FILE = 'arenas/arena'
 
@@ -16,10 +17,17 @@ class Arena
 
 				if @model
 					@modelData = ModelData.load loader, @model
+
+				if @animation
+					@animData = AnimationData.load loader, @animation.file
 	
 	init: ->
 		@arena = new Model
 		@arena.setData @modelData
+		if @animData
+			@arena.animation.data = @animData
+			@arena.animation.setAnim @animation.default
+		this
 
 	predraw: ->
 		canvas = @gamecore.canvas
@@ -28,10 +36,33 @@ class Arena
 		cx = (w / 2) + @translate.x
 		cy = (h / 2) + @translate.y
 		@gamecore.context.translate cx, cy
+		this
+
+	createUnit: (name, callback) ->
+		data = @gamecore.unitsData[name]
+		if data
+			loadUnitData data, =>
+				unit = new Unit data
+				@add unit
+		this
+
+	add: (unit) ->
+		unit.arena = this
+		@units.push unit
+		if @gamecore.arena == this
+			unit.add2draw()
+		this
+
+	remove: (unit) ->
+		index = @units.indexOf unit
+		if index >= 0
+			@units.splice index, 1
 
 	set: ->
 		@remove()
+		@gamecore.arena = this
 		@gamecore.drawstage.add @arena, @position
+		@units.add2draw()
 		ac = @camera
 		if ac
 			c = @gamecore.camera
@@ -40,11 +71,13 @@ class Arena
 			c.z = ac.z || 0
 
 	remove: ->
+		@gamecore.arena = null
 		@gamecore.drawstage.delete @arena
+		@units.removeFromDraw()
 
-	play: (time) ->
+	update: (time) ->
 		@arena?.animation.play time
-		@units.play time
+		@units.update time
 
 
 export { Arena }

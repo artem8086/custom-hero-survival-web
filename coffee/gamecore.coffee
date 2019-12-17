@@ -6,20 +6,22 @@ import { Loader } from './loader'
 
 class GameCore extends EventEmmiter
 
-	constructor: (@canvas, @context) ->
+	constructor: (@canvas, @context, @mode = 'easy') ->
 		super()
 		@loader = new Loader
 		@camera = camera = x: 0, y: 0, z: 0
 		@drawstage = new DrawStage @context, camera
-		@arena = new Arena this
+		@mainArena = new Arena this
 		@pauseTime = 0
 		@pause = false
 
 	load: ->
-		@arena.load @loader
+		@loadUnitsData()
+		@mainArena.load @loader
 		@loader.on 'load', =>
-			@arena.init()
-			@arena.set()
+			@mainArena.init()
+			@mainArena.set()
+			@mainArena.createUnit 'banny'
 			@trigger 'load'
 		this
 
@@ -36,7 +38,7 @@ class GameCore extends EventEmmiter
 			unless @pause
 				@time = Animation.getTime() - @pauseTime
 
-			@arena.play @time
+			@arena.update @time
 
 			# context.translate cx, cy
 			@arena.predraw()
@@ -55,5 +57,16 @@ class GameCore extends EventEmmiter
 	unpause: ->
 		@pause = false
 		@pauseTime += Animation.getTime() - @time
+
+	loadUnitsData: ->
+		@loader.loadJsonWithMode 'npc/units', @mode, (data) =>
+			for name, unit of data
+				if unit.extends
+					exUnit = data[unit.extends]
+					u = Loader.combineConfigs {}, exUnit
+					u = Loader.combineConfigs u, unit
+					data[name] = u
+			@unitsData = data
+		null
 
 export { GameCore }

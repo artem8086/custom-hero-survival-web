@@ -30,12 +30,25 @@ class Loader extends EventEmmiter
 				_this.trigger 'load'
 			_this.updatePercent()
 
+	isLoad: ->
+		loadResNumber <= 0
+
 	loadJson: (file, callback) ->
 		callback = @load callback
 		$.getJSON file + '.json'
 			.done callback
 			.fail ->
 				callback null
+
+	loadJsonWithMode: (file, mode, callback) ->
+		@loadJson file, (data1) ->
+			@loadJson file + '_' + mode, (data2) ->
+				if data1
+					if data2
+						Loader.combineConfigs data1, data2
+					callback data1
+				else
+					callback data2
 
 	loadImage: (file, callback) ->
 		callback = @load callback
@@ -44,5 +57,25 @@ class Loader extends EventEmmiter
 			callback img
 		img.src = file
 		img
+
+	@combineConfigs: (obj1, obj2) ->
+		for k, v of obj2
+			switch typeof v
+				when 'object'
+					if v
+						if v.constructor != Array
+							obj = obj1[k]
+							unless obj
+								obj = obj1[k] = {}
+							Loader.combineConfigs obj, v
+						else
+							obj1[k] = v
+					else
+						delete obj1[k]
+				when 'undefined'
+					delete obj1[v]
+				else
+					obj1[k] = v
+		obj1
 
 export { Loader }

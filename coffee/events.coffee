@@ -18,6 +18,8 @@ class EventEmmiter
 				index = handler.indexOf callback
 				if index >= 0
 					handler.splice index, 1
+		else
+			delete @handlers[event]
 		this
 
 	trigger: (event, args) ->
@@ -25,10 +27,6 @@ class EventEmmiter
 		if handler
 			for callback in handler
 				callback.apply this, args
-		this
-
-	removeEvent: (event) ->
-		delete @handlers[event]
 		this
 
 export { EventEmmiter }

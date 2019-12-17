@@ -3,6 +3,10 @@ obj =
 	translate:
 		x: 0
 		y: -1600
+	ground:
+		x: 0
+		y: 1600
+		z: -1400
 	camera:
 		x: 0
 		y: 1800

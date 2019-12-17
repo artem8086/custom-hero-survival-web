@@ -20,7 +20,7 @@ createGroup = (objectClass) ->
 		setProp = (func) ->
 			proto[prop] = ->
 				@forEach (e) ->
-					func.apply e, arguments 
+					func.apply e, arguments
 		setProp func
 
 	Group

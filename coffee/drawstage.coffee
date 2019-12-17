@@ -65,8 +65,10 @@ class PartObject
 		tVector.x = @v.x + c.x
 		tVector.y = @v.y + c.y
 		tVector.z = @v.z + c.z
+		g.save()
 		if @scale then g.scale @scale, @scale
 		@model.drawPart g, @part, tVector, @opacity
+		g.restore()
 
 class NodeObject
 	constructor: (@model) ->
