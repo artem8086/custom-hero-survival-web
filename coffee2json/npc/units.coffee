@@ -20,6 +20,12 @@ obj =
 
 		radius: 40
 
+		moveRadius: 20
+		speedScale: 0.008
+
+		properties:
+			speed: 400
+
 	banny:
 		extends: 'base_unit'
 

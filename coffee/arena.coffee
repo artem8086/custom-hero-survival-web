@@ -5,6 +5,8 @@ import { loadUnitData } from './unit'
 
 ARENA_FILE = 'arenas/arena'
 
+curObj = x: 0, y: 0, z: 0
+
 class Arena
 	constructor: (@gamecore) ->
 		@units = new UnitGroup
@@ -38,12 +40,33 @@ class Arena
 		@gamecore.context.translate cx, cy
 		this
 
+	pickCursor: (x, y) ->
+		canvas = @gamecore.canvas
+		w = canvas.width
+		h = canvas.height
+		x -= (w / 2) + @translate.x
+		y -= (h / 2) + @translate.y
+		camera = @gamecore.camera
+		v = Model.untransform x, y, camera
+		curObj.x = v.x
+		curObj.y = v.y
+		curObj.z = v.z
+		curObj
+
+	getMovePoint: (v) ->
+		ground = @ground
+		v.x -= ground.x
+		v.x -= ground.y
+		v.z -= ground.z
+		v
+
 	createUnit: (name, callback) ->
 		data = @gamecore.unitsData[name]
 		if data
 			loadUnitData data, =>
 				unit = new Unit data
 				@add unit
+				callback?(unit)
 		this
 
 	add: (unit) ->
@@ -75,9 +98,28 @@ class Arena
 		@gamecore.drawstage.delete @arena
 		@units.removeFromDraw()
 
-	update: (time) ->
+	update: (time, delta) ->
 		@arena?.animation.play time
-		@units.update time
-
+		@units.update time, delta
+	
+	checkColission: (unit) ->
+		for col in @collisions
+			stop = false
+			x = unit.x
+			y = unit.y
+			if x < col.x1
+				unit.x = col.x1
+				stop = true
+			if x > col.x2
+				unit.x = col.x2
+				stop = true
+			if y < col.y1
+				unit.y = col.y1
+				stop = true
+			if y > col.y2
+				unit.y = col.y2
+				stop = true
+			if stop
+				unit.stop()
 
 export { Arena }

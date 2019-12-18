@@ -84,8 +84,9 @@ class NodeObject
 	draw: (stage) ->
 		c = stage.camera
 		g = stage.context
+		v = @v
 		g.save()
-		Model.transform(@v.x, @v.y, @v.z, c)
+		Model.transform(v.x, v.y, v.z, c)
 			.apply g
 		if @scale then g.scale @scale, @scale
 		@model.drawNode g, @node, @opacity

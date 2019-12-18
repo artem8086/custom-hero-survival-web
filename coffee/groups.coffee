@@ -19,8 +19,9 @@ createGroup = (objectClass) ->
 	for prop, func of getProperties objectClass::
 		setProp = (func) ->
 			proto[prop] = ->
+				args = arguments
 				@forEach (e) ->
-					func.apply e, arguments
+					func.apply e, args
 		setProp func
 
 	Group

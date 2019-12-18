@@ -384,12 +384,22 @@ trsfObj =
 	x: 0
 	y: 0
 	scale: 1
+	z: 0
 	apply: (g) ->
 		g.transform @scale, 0, 0, @scale, @x, @y
 
 
 
 class Model
+	@untransform: (x, y, camera) ->
+		# z2 = (Z_ORIGIN + camera.z) * Z_TRANSFORM
+		z = y / Z_TRANSFORM / camera.y - Z_ORIGIN - camera.z
+		z2 = (Z_ORIGIN + z + camera.z) * Z_TRANSFORM
+		trsfObj.x = (x / z2) - camera.x
+		trsfObj.y = 0
+		trsfObj.z = z
+		trsfObj
+
 	@transform: (x, y, z, camera) ->
 		z = (Z_ORIGIN + z + camera.z) * Z_TRANSFORM
 		trsfObj.x = (x + camera.x) * z
