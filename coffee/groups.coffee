@@ -3,6 +3,8 @@ createGroup = (objectClass) ->
 		constructor: ->
 			super 0
 
+		each: Array::forEach
+
 	getProperties = (obj, array = []) ->
 		for prop in Object.getOwnPropertyNames obj
 			if prop != 'constructor'
@@ -15,6 +17,9 @@ createGroup = (objectClass) ->
 		array
 
 	proto = Group::
+
+	objectClass::each = (callback) ->
+		callback this
 
 	for prop, func of getProperties objectClass::
 		setProp = (func) ->

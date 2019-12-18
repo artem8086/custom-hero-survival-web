@@ -161,7 +161,11 @@ class Unit extends EventEmmiter
 		# update unit state
 		unitStates[@state]?.call this
 		# check collisions with arena
-		@arena.checkColission this
+		v = @arena.checkColission @x, @y
+		if v
+			@x = v.x
+			@y = v.y
+			@stop()
 		# update model postion
 		ground = @arena.ground
 		v = @model.nodeObj.v
@@ -177,7 +181,6 @@ class Unit extends EventEmmiter
 			sv.y = ground.y
 			@shadow.animation.play time
 		this
-
 
 UnitGroup = createGroup Unit
 

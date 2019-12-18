@@ -1,9 +1,13 @@
 import { EventEmmiter } from './events'
 import { ModelData, Model } from './model'
+import { Player } from './player'
 import { Arena } from './arena'
 import { Animation } from './animation'
 import { DrawStage } from './drawstage'
 import { Loader } from './loader'
+
+TEAM_NEUTRAL = 0
+TEAM_PLAYERS = 1
 
 class GameCore extends EventEmmiter
 
@@ -14,6 +18,7 @@ class GameCore extends EventEmmiter
 		@gamescreen = $ '.gamescreen'
 		@drawstage = new DrawStage @context, camera
 		@mainArena = new Arena this
+		@mainPlayer = new Player this, TEAM_PLAYERS
 		@time = Animation.getTime()
 		@pauseTime = 0
 		@pause = false
@@ -25,8 +30,9 @@ class GameCore extends EventEmmiter
 		@loader.on 'load', =>
 			@mainArena.init()
 			@mainArena.set()
-			@mainArena.createUnit 'banny', (@unit) =>
-			@initGameScreen()
+			@mainPlayer.setupControl @gamescreen
+			@mainArena.createUnit 'banny', (unit) =>
+				@mainPlayer.setMainUnit unit
 			@trigger 'load'
 		this
 
@@ -45,8 +51,10 @@ class GameCore extends EventEmmiter
 				@delta = time - @time
 				@time = time
 
+			@mainPlayer.update()
 			@arena.update @time, @delta
 
+			@mainPlayer.updateCamera()
 			# context.translate cx, cy
 			@arena.predraw()
 
@@ -77,12 +85,5 @@ class GameCore extends EventEmmiter
 					data[name] = u
 			@unitsData = data
 		null
-
-	initGameScreen: ->
-		@gamescreen.on 'mousedown', (e) =>
-			if @unit
-				v = @arena.pickCursor e.clientX, e.clientY
-				v = @arena.getMovePoint v
-				@unit.moveToPos v.x, v.z
 
 export { GameCore }

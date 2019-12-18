@@ -11,6 +11,10 @@ obj =
 		x: 0
 		y: 1800
 		z: -1400
+	cameraOffset:
+		x: 0
+		y: 1800
+		z: -2600
 	position:
 		x: 0
 		y: 0

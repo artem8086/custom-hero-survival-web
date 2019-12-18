@@ -53,7 +53,7 @@ class Arena
 		curObj.z = v.z
 		curObj
 
-	getMovePoint: (v) ->
+	getGroundPoint: (v) ->
 		ground = @ground
 		v.x -= ground.x
 		v.x -= ground.y
@@ -102,24 +102,26 @@ class Arena
 		@arena?.animation.play time
 		@units.update time, delta
 	
-	checkColission: (unit) ->
+	checkColission: (x, y) ->
+		collide = false
 		for col in @collisions
-			stop = false
-			x = unit.x
-			y = unit.y
 			if x < col.x1
-				unit.x = col.x1
-				stop = true
+				x = col.x1
+				collide = true
 			if x > col.x2
-				unit.x = col.x2
-				stop = true
+				x = col.x2
+				collide = true
 			if y < col.y1
-				unit.y = col.y1
-				stop = true
+				y = col.y1
+				collide = true
 			if y > col.y2
-				unit.y = col.y2
-				stop = true
-			if stop
-				unit.stop()
+				y = col.y2
+				collide = true
+		if collide
+			curObj.x = x
+			curObj.y = y
+			curObj
+		else
+			null
 
 export { Arena }

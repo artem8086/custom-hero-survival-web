@@ -21,29 +21,29 @@ $(document).ready ->
 
 	gamecore.load()
 
-	camera = gamecore.camera
+	# camera = gamecore.camera
 
-	oldMouseX = oldMouseY =0
-	moveCamera = (e) ->
-		camera.x += e.clientX - oldMouseX
-		camera.y += e.clientY - oldMouseY
-		oldMouseX = e.clientX
-		oldMouseY = e.clientY
+	# oldMouseX = oldMouseY =0
+	# moveCamera = (e) ->
+	# 	camera.x += e.clientX - oldMouseX
+	# 	camera.y += e.clientY - oldMouseY
+	# 	oldMouseX = e.clientX
+	# 	oldMouseY = e.clientY
 
-	$gamescreen.on 'mousedown', (e) ->
-		oldMouseX = e.clientX
-		oldMouseY = e.clientY
-		$gamescreen.on 'mousemove', moveCamera
+	# $gamescreen.on 'mousedown', (e) ->
+	# 	oldMouseX = e.clientX
+	# 	oldMouseY = e.clientY
+	# 	$gamescreen.on 'mousemove', moveCamera
 
-	$gamescreen.on 'touchstart', (e) ->
-		oldMouseX = e.touches[0].clientX
-		oldMouseY = e.touches[0].clientY
+	# $gamescreen.on 'touchstart', (e) ->
+	# 	oldMouseX = e.touches[0].clientX
+	# 	oldMouseY = e.touches[0].clientY
 
-	$gamescreen.on 'touchmove', (e) ->
-		moveCamera e.touches[0]
+	# $gamescreen.on 'touchmove', (e) ->
+	# 	moveCamera e.touches[0]
 
-	$gamescreen.on 'mouseup', ->
-		$gamescreen.off 'mousemove', moveCamera
+	# $gamescreen.on 'mouseup', ->
+	# 	$gamescreen.off 'mousemove', moveCamera
 
 	$('.js-stop-propagation').on 'mousedown mouseup mousemove touchstart touchmove', (e) ->
 		e.stopPropagation()
