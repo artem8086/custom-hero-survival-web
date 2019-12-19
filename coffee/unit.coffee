@@ -171,7 +171,7 @@ class Unit extends EventEmmiter
 		v = @model.nodeObj.v
 		v.x = @x + ground.x
 		v.z = @y + ground.z
-		v.y = @z + ground.y
+		v.y = ground.y - @z
 		unless @model.animation.play time
 			@trigger 'anim_end'
 		if @shadow

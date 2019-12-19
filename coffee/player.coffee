@@ -23,12 +23,13 @@ class Player extends EventEmmiter
 	updateCamera: ->
 		unit = @mainUnit
 		if unit
-			camOffs = @gamecore.arena.cameraOffset
-			ground = @gamecore.arena.ground
-			camera = @gamecore.camera
+			gamecore = @gamecore
+			camOffs = gamecore.arena.cameraOffset
+			ground = gamecore.arena.ground
+			camera = gamecore.camera
 			camera.x = ground.x + camOffs.x - unit.x
 			camera.y = ground.y + camOffs.y - unit.z
-			camera.z = ground.z + camOffs.z - unit.y
+			camera.z = ground.z + camOffs.z - unit.y + gamecore.cameraZoom
 
 	addUnit: (unit) ->
 		unit.owner = this
@@ -53,20 +54,6 @@ class Player extends EventEmmiter
 			@selectUnits = @mainUnit
 		else
 			@selectUnits = new UnitGroup
-
-	setupControl: (gamescreen) ->
-		gamescreen.on 'mousedown', (e) =>
-			arena = @gamecore.arena
-			v = arena.pickCursor e.clientX, e.clientY
-			v = arena.getGroundPoint v
-			v.y = v.z
-			v2 = arena.checkColission v.x, v.y
-			if v2
-				v = v2
-			@action =
-				name: 'moveToPos'
-				args: [v.x, v.y]
-		this
 
 
 PlayerGroup = createGroup Player

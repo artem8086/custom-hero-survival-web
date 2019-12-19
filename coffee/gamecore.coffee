@@ -1,4 +1,5 @@
 import { EventEmmiter } from './events'
+import { GameControl } from './gamecontrol'
 import { ModelData, Model } from './model'
 import { Player } from './player'
 import { Arena } from './arena'
@@ -11,6 +12,11 @@ TEAM_PLAYERS = 1
 
 class GameCore extends EventEmmiter
 
+	cameraZoom: 0
+	pauseTime: 0
+	pause: false
+	delta: 0
+
 	constructor: (@canvas, @context, @mode = 'easy') ->
 		super()
 		@loader = new Loader
@@ -19,10 +25,8 @@ class GameCore extends EventEmmiter
 		@drawstage = new DrawStage @context, camera
 		@mainArena = new Arena this
 		@mainPlayer = new Player this, TEAM_PLAYERS
+		@gamecontrol = new GameControl this, @mainPlayer
 		@time = Animation.getTime()
-		@pauseTime = 0
-		@pause = false
-		@delta = 0
 
 	load: ->
 		@loadUnitsData()
@@ -30,7 +34,7 @@ class GameCore extends EventEmmiter
 		@loader.on 'load', =>
 			@mainArena.init()
 			@mainArena.set()
-			@mainPlayer.setupControl @gamescreen
+			@gamecontrol.init()
 			@mainArena.createUnit 'banny', (unit) =>
 				@mainPlayer.setMainUnit unit
 			@trigger 'load'

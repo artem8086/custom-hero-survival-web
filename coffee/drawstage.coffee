@@ -1,6 +1,6 @@
 import { Model } from './model'
 
-MIN_Z_DISTANCE = -3000
+MIN_Z_DISTANCE = -4000
 MAX_Z_DISTANCE = 2000
 
 class DrawStage
