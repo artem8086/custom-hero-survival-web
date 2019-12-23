@@ -114,16 +114,15 @@ class Unit extends EventEmmiter
 	moveToPos: (x, y) ->
 		xp = x - @x
 		yp = y - @y
-		mp = @data.moveRadius
-		if xp * xp + yp * yp >= mp * mp
+		ur = @data.moveRadius
+		if xp * xp + yp * yp >= ur * ur
 			@state = UNIT_MOVE_TO_POSTION
 			@animation
 			v = @vPos
 			v.x = x
 			v.y = y
-			@setVecMove xp, yp
-			m = @model
 			@setAnim 'walk'
+			@setVecMove xp, yp
 		this
 
 	stand: ->
@@ -139,7 +138,7 @@ class Unit extends EventEmmiter
 		v = @vMove
 		v.x = x
 		v.y = y
-		if x != 0 && y != 0
+		if x != 0 || y != 0
 			@setAngleV x, y
 			# normalize vector
 			len = Math.sqrt x * x + y * y
@@ -158,7 +157,7 @@ class Unit extends EventEmmiter
 		v = @vMove
 		x = v.x
 		y = v.y
-		if x != 0 && y !=0
+		if x != 0 || y !=0
 			speed = delta * @getProp 'speed'
 			@x += x * speed
 			@y += y * speed

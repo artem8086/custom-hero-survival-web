@@ -1,5 +1,6 @@
 import { ModelData, Model } from './model'
 import { AnimationData } from './animation'
+import { Selection } from './selection'
 import { Unit, UnitGroup } from './unit'
 import { loadUnitData } from './unit'
 
@@ -7,8 +8,9 @@ ARENA_FILE = 'arenas/arena'
 
 curObj = x: 0, y: 0, z: 0
 
-class Arena
+class Arena extends Selection
 	constructor: (@gamecore) ->
+		super()
 		@units = new UnitGroup
 
 	load: (loader, file) ->

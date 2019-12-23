@@ -1,2 +1,7 @@
 .gamescreen.gamegui
 	button.btn-fullscreen.js-stop-propagation
+	span.btn-add-unit.js-stop-propagation(draggable="true") +
+
+	+b.status
+		+e.info FPS: #[span.js-fps]
+		+e.info Юнитов: #[span.js-count]

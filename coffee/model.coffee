@@ -396,7 +396,7 @@ class Model
 		z = y / Z_TRANSFORM / camera.y - Z_ORIGIN - camera.z
 		z2 = (Z_ORIGIN + z + camera.z) * Z_TRANSFORM
 		trsfObj.x = (x / z2) - camera.x
-		trsfObj.y = 0
+		trsfObj.y = (y / z2) - camera.y
 		trsfObj.z = z
 		trsfObj
 

@@ -11,6 +11,24 @@ import { Loader } from './loader'
 TEAM_NEUTRAL = 0
 TEAM_PLAYERS = 1
 
+countFPS = do ->
+	lastLoop = do (new Date).getMilliseconds
+	count = 1
+	fps = 0
+
+	->
+		currentLoop = do (new Date).getMilliseconds
+		if lastLoop > currentLoop
+			fps = count
+			count = 1
+		else
+			count += 1
+		lastLoop = currentLoop
+		fps
+
+infoFps = $ '.js-fps'
+infoUnitsCount = $ '.js-count'
+
 class GameCore extends EventEmmiter
 
 	cameraZoom: 0
@@ -67,6 +85,9 @@ class GameCore extends EventEmmiter
 			@drawstage.draw()
 
 			@context.restore()
+
+			infoUnitsCount.text @arena.units.length
+			infoFps.text countFPS()
 			# 
 			window.requestAnimationFrame rndr
 		rndr 0
