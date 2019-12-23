@@ -112,14 +112,18 @@ class Unit extends EventEmmiter
 		this
 
 	moveToPos: (x, y) ->
-		@state = UNIT_MOVE_TO_POSTION
-		@animation
-		v = @vPos
-		v.x = x
-		v.y = y
-		@setVecMove x - @x, y - @y
-		m = @model
-		@setAnim 'walk'
+		xp = x - @x
+		yp = y - @y
+		mp = @data.moveRadius
+		if xp * xp + yp * yp >= mp * mp
+			@state = UNIT_MOVE_TO_POSTION
+			@animation
+			v = @vPos
+			v.x = x
+			v.y = y
+			@setVecMove xp, yp
+			m = @model
+			@setAnim 'walk'
 		this
 
 	stand: ->

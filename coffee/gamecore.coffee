@@ -5,6 +5,7 @@ import { Player } from './player'
 import { Arena } from './arena'
 import { Animation } from './animation'
 import { DrawStage } from './drawstage'
+import { Engine } from './engine'
 import { Loader } from './loader'
 
 TEAM_NEUTRAL = 0
@@ -24,6 +25,7 @@ class GameCore extends EventEmmiter
 		@gamescreen = $ '.gamescreen'
 		@drawstage = new DrawStage @context, camera
 		@mainArena = new Arena this
+		@engine = new Engine this
 		@mainPlayer = new Player this, TEAM_PLAYERS
 		@gamecontrol = new GameControl this, @mainPlayer
 		@time = Animation.getTime()
@@ -35,6 +37,7 @@ class GameCore extends EventEmmiter
 			@mainArena.init()
 			@mainArena.set()
 			@gamecontrol.init()
+			@engine.init()
 			@mainArena.createUnit 'banny', (unit) =>
 				@mainPlayer.setMainUnit unit
 			@trigger 'load'
@@ -55,7 +58,6 @@ class GameCore extends EventEmmiter
 				@delta = time - @time
 				@time = time
 
-			@mainPlayer.update()
 			@arena.update @time, @delta
 
 			@mainPlayer.updateCamera()
@@ -71,11 +73,13 @@ class GameCore extends EventEmmiter
 		this
 
 	pause: ->
+		@engine.pause()
 		@pause = true
 		@delta = 0
 
 	unpause: ->
 		if @pause
+			@engine.unpause()
 			@pause = false
 			@pauseTime += Animation.getTime() - @time
 

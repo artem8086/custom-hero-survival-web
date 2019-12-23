@@ -7,9 +7,9 @@ class Engine
 
 	constructor: (@gamecore) ->
 
-	initEngine: ->
+	init: ->
 		@timer = setInterval(=>
-			@logicUpdate
+			@logicUpdate()
 		, UPDATE_TIME)
 
 	pause: ->
@@ -23,7 +23,9 @@ class Engine
 			@initEngine()
 
 	logicUpdate: ->
-		
+		gamecore = @gamecore
+		gamecore.mainPlayer.update()
+		this
 
 
 export { Engine }
