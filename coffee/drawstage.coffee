@@ -5,9 +5,8 @@ MAX_Z_DISTANCE = 2000
 
 class DrawStage
 
-	objects: []
-
 	constructor: (@context, @camera) ->
+		@objects = []
 
 	add: (model, v) ->
 		objects = @objects
@@ -25,6 +24,10 @@ class DrawStage
 				nObj.v = v
 				model.nodeObj = nObj
 				objects.push nObj
+		this
+
+	addGroup: (drawgroup) ->
+		@objects.push drawgroup
 		this
 
 	delete: (model) ->
@@ -55,6 +58,7 @@ class PartObject
 		@v.x = v.x
 		@v.y = v.y
 		@v.z = v.z
+		this
 
 	getZ: ->
 		@part.z + @v.z
@@ -77,6 +81,7 @@ class NodeObject
 		@v.x = v.x
 		@v.y = v.y
 		@v.z = v.z
+		this
 
 	getZ: ->
 		@v.z
@@ -92,4 +97,47 @@ class NodeObject
 		@model.drawNode g, @node, @opacity
 		g.restore()
 
-export { DrawStage }
+class DrawGroup extends DrawStage
+	constructor: (@model, v) ->
+		super()
+		@v = v || x: 0, y: 0, z: 0
+
+	setPos: (v) ->
+		@v.x = v.x
+		@v.y = v.y
+		@v.z = v.z
+		this
+
+	getZ: ->
+		@v.z
+
+	draw: (stage) ->
+		for obj in @objects
+			vt = @v
+			v = obj.v
+			tx = v.x
+			ty = v.y
+			tz = v.z
+			v.x += vt.x
+			v.y += vt.y
+			v.z += vt.z
+			obj.draw stage
+			v.x = tx
+			v.y = ty
+			v.z = tz
+		this
+
+	play: (time, target) ->
+		result = true
+		for obj in @objects
+			res = obj.model.animation.play time
+			if target == obj
+				result = res
+		result
+
+	sort: ->
+		@objects = @objects.sort (a, b) ->
+			a.getZ() - b.getZ()
+		this
+
+export { DrawStage, DrawGroup }

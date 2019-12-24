@@ -2,6 +2,7 @@ import { ModelData, Model } from './model'
 import { EventEmmiter } from './events'
 import { createGroup } from './groups'
 import { AnimationData } from './animation'
+import { DrawGroup } from './drawstage'
 import { Loader } from './loader'
 
 loadUnitData = (unitData, callback, loader) ->
@@ -86,19 +87,17 @@ class Unit extends EventEmmiter
 			0
 
 	add2draw: ->
-		drawstage = @arena.gamecore.drawstage
+		@drawgroup = drawgroup = new DrawGroup @model
 		if @shadow
-			drawstage.add @shadow
+			drawgroup.add @shadow
 			@shadow.nodeObj.node = @data.shadow.node
-		drawstage.add @model
+		drawgroup.add @model
 		@model.nodeObj.node = @data.styles.default
+		@arena.gamecore.drawstage.addGroup drawgroup
 		this
 
 	removeFromDraw: ->
-		if @shadow
-			drawstage.delete @shadow
-		drawstage = @arena.gamecore.drawstage
-		drawstage.delete @model
+		@arena.gamecore.drawstage.delete @model
 		this
 
 	setAnim: (name, scale = 1, isLoop = true) ->
@@ -171,18 +170,16 @@ class Unit extends EventEmmiter
 			@stop()
 		# update model postion
 		ground = @arena.ground
-		v = @model.nodeObj.v
+		drawgroup = @drawgroup
+		v = drawgroup.v
 		v.x = @x + ground.x
 		v.z = @y + ground.z
-		v.y = ground.y - @z
-		unless @model.animation.play time
+		v.y = ground.y
+		model = @model
+		model.nodeObj.v.y = - @z
+		# update animation
+		unless drawgroup.play time, model
 			@trigger 'anim_end'
-		if @shadow
-			sv = @shadow.nodeObj.v
-			sv.x = v.x
-			sv.z = v.z
-			sv.y = ground.y
-			@shadow.animation.play time
 		this
 
 UnitGroup = createGroup Unit
