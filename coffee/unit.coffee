@@ -4,6 +4,7 @@ import { createGroup } from './groups'
 import { AnimationData } from './animation'
 import { DrawGroup } from './drawstage'
 import { Loader } from './loader'
+import { UnitState } from './unitstates'
 
 loadUnitData = (unitData, callback, loader) ->
 	if unitData.loader
@@ -37,24 +38,7 @@ loadUnitData = (unitData, callback, loader) ->
 			loader.on 'load', load
 	null
 
-UNIT_STAND = 0
-UNIT_MOVE_TO_POSTION = 1
-
-unitStates = []
-
-unitStates[UNIT_MOVE_TO_POSTION] = ->
-	v = @vPos
-	xp = v.x - @x
-	yp = v.y - @y
-	mp = @data.moveRadius
-	if xp * xp + yp * yp >= mp * mp
-		@model.animation.scale = @data.speedScale * @getProp 'speed'
-	else
-		@stop()
-
 class Unit extends EventEmmiter
-	state: UNIT_STAND
-
 	x: 0
 	y: 0
 	z: 0
@@ -70,8 +54,6 @@ class Unit extends EventEmmiter
 		if @data.shadow
 			@shadow = new Model
 			@shadow.setData @data.shadow.model
-		@vPos = x: 0, y: 0
-		@vMove = x: 0, y: 0
 		@initProperties()
 
 	initProperties: ->
@@ -111,39 +93,16 @@ class Unit extends EventEmmiter
 		this
 
 	moveToPos: (x, y) ->
-		xp = x - @x
-		yp = y - @y
-		ur = @data.moveRadius
-		if xp * xp + yp * yp >= ur * ur
-			@state = UNIT_MOVE_TO_POSTION
-			@animation
-			v = @vPos
-			v.x = x
-			v.y = y
-			@setAnim 'walk'
-			@setVecMove xp, yp
+		@state = new UnitState.UnitMove(this)
+			.moveToPos x, y
 		this
 
 	stand: ->
-		@state = UNIT_STAND
+		@state = null
 		@setAnim 'stand'
 
 	stop: ->
 		@stand()
-		v = @vMove
-		v.x = v.y = 0
-
-	setVecMove: (x, y) ->
-		v = @vMove
-		v.x = x
-		v.y = y
-		if x != 0 || y != 0
-			@setAngleV x, y
-			# normalize vector
-			len = Math.sqrt x * x + y * y
-			v.x /= len
-			v.y /= len
-		this
 
 	setAngleV: (x, y) ->
 		angle = Math.atan2(y, x) * 180 / Math.PI
@@ -152,16 +111,9 @@ class Unit extends EventEmmiter
 		this
 
 	update: (time, delta) ->
-		# update movement
-		v = @vMove
-		x = v.x
-		y = v.y
-		if x != 0 || y !=0
-			speed = delta * @getProp 'speed'
-			@x += x * speed
-			@y += y * speed
 		# update unit state
-		unitStates[@state]?.call this
+		# unitStates[@state]?.call this
+		@state?.update time, delta
 		# check collisions with arena
 		v = @arena.checkColission @x, @y
 		if v
